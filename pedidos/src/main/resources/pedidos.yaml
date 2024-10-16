@@ -1,0 +1,142 @@
+openapi: 3.0.1
+info:
+  title: Pedido API
+  description: API para la gestión de pedidos
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8081
+    description: Localhost server para pedidos
+
+paths:
+  /v1/pedidos:
+    get:
+      description: Retorna todos los pedidos
+      operationId: getPedidos
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PedidoType"
+    post:
+      description: Crea un nuevo pedido
+      operationId: createPedido
+      requestBody:
+        description: Pedido a crear
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PedidoType"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PedidoType"
+  /v1/pedidos/{id}:
+    get:
+      description: Retorna un pedido por ID
+      operationId: getPedidoById
+      parameters:
+        - name: id
+          in: path
+          description: ID del pedido
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PedidoType"
+    put:
+      description: Actualiza un pedido existente
+      operationId: updatePedido
+      parameters:
+        - name: id
+          in: path
+          description: ID del pedido
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Pedido a actualizar
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PedidoType"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PedidoType"
+    delete:
+      description: Elimina un pedido existente
+      operationId: deletePedido
+      parameters:
+        - name: id
+          in: path
+          description: ID del pedido
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: No Content
+
+components:
+  schemas:
+    PedidoType:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        productos:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProductoType"
+        productosIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+        total:
+          type: number
+          format: float
+        estado:
+          type: string
+          enum:
+            - PENDIENTE
+            - PROCESANDO
+            - COMPLETADO
+            - CANCELADO
+      required:
+        - productosIds
+    ProductoType:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        nombre:
+          type: string
+        descripcion:
+          type: string
+        precio:
+          type: integer
+          format: int32
